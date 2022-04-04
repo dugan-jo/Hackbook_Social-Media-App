@@ -2,10 +2,11 @@ const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
     {
-        
+        name: String,
+        age: Number,
     }
 )
 
-const Thoughts = model('thoughts', ThoughtsSchema);
+const User = model('user', userSchema);
 
-module.exports = Thoughts;
+module.exports = User;

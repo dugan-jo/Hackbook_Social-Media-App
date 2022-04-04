@@ -1,12 +1,24 @@
 const { Schema, model } = require('mongoose');
 
+const ThoughtsSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            max_length: 280,
+        },
+        createdAt: {
+            type: Date,
+            default: () => new Date
+        }
+    }
+)
 
 
 
 
 
+const Thoughts = model('thoughts', ThoughtsSchema);
 
 
-const User = model('user', userSchema);
-
-module.exports = User;
+module.exports = Thoughts;
