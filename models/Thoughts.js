@@ -1,6 +1,8 @@
+// WHEN I PUT THIS IN, THE SERVER DOES NOT WORK AND I GET (ERR)
 const { Schema, model } = require("mongoose");
+const reactionSchema = require("./Reaction");
 
-const ThoughtsSchema = new Schema(
+const thoughtsSchema = new Schema(
   {
     thoughtText: {
       type: String,
@@ -11,20 +13,26 @@ const ThoughtsSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    user: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-      },
-    ],
+    username: {
+      type: String,
+      required: true,
+    },
+
+    reaction: [reactionSchema],
   },
   {
     toJSON: {
       virtuals: true,
     },
-    id: false,
+    id: true,
   }
 );
 
-const Thoughts = model("thoughts", ThoughtsSchema);
+/////////////////////////////////////////////////
+//                                             //
+//    DO I NEED TO MAKE A REACTION VIRTUAL?    //
+//                                             //
+/////////////////////////////////////////////////
+
+const Thoughts = model("thoughts", thoughtsSchema);
 module.exports = Thoughts;

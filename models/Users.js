@@ -1,35 +1,49 @@
 const { Schema, model } = require("mongoose");
-const { Users } = require(".");
-const ThoughtsSchema = require("./Thoughts");
 
-const userSchema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     email: {
       type: String,
-      trim: true,
+      required: true,
       unique: true,
-      required: "Email address is required",
-      //   validate: [validateEmail, "Please fill a valid email address"],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please fill a valid email address",
-      ],
+      email: {
+        type: String,
+        trim: true,
+        unique: true,
+        required: "Email address is required",
+        match: [
+          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+          "Please fill a valid email address",
+        ],
+      },
     },
+    thoughts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Thoughts",
+      },
+    ],
   },
-  thoughts: [ThoughtsSchema],
-  // friends: [userSchema]
-  thoughts: [{ type: Schema.Types.ObjectId }, { ref: "thoughts" }],
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: true,
+  }
+);
+userSchema.virtual("friends").get(function () {
+  ///////////////////////////////
+  //                           //
+  //    WHAT DO WE RETURN?     //
+  //                           //
+  ///////////////////////////////
 });
 
-const User = model("user", userSchema);
-
+const User = model("User", userSchema);
 module.exports = User;

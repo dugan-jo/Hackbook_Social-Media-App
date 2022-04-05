@@ -1,11 +1,19 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
 
-const ReactionSchema = new Schema({
-  thoughtBody: {
+const reactionSchema = new mongoose.Schema({
+  reactionBody: {
     type: String,
     required: true,
     max_length: 280,
   },
-  username: req.body._ID,
-  createdAt: { type: Date, required: true },
+  username: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
+// const Reactions = model("reactions", reactionSchema);
+module.exports = reactionSchema;
