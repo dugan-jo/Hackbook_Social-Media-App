@@ -27,6 +27,9 @@ const thoughtsSchema = new Schema(
     id: true,
   }
 );
+reactionSchema.virtual("reaction").get(function () {
+  return res.body;
+});
 
 /////////////////////////////////////////////////
 //                                             //
