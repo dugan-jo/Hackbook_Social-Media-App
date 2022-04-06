@@ -29,21 +29,18 @@ const userSchema = new Schema(
         ref: "Thoughts",
       },
     ],
-    // friends: [userSchema],
+    friends: [this],
   },
   {
     toJSON: {
       virtuals: true,
     },
-    id: true,
+    id: false,
   }
 );
-userSchema.virtual("friends").get(function () {
-  ///////////////////////////////
-  //                           //
-  //    WHAT DO WE RETURN?     //
-  //                           //
-  ///////////////////////////////
+
+userSchema.virtual("friendCount").get(function () {
+  return this.friends.length;
 });
 
 const User = model("User", userSchema);

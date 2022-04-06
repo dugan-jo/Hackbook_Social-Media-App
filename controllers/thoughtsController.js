@@ -1,6 +1,6 @@
 const Users = require("../models/Users");
 const Thoughts = require("../models/Thoughts");
-const Reactions = require("../models/Reaction");
+const Reaction = require("../models/Reaction");
 
 module.exports = {
   //
@@ -104,22 +104,22 @@ module.exports = {
   //                              //
   //////////////////////////////////
   // POST -> -> http://localhost:3001/api/{thoughtsID}/reaction <- <- POST //
-  createReactions(req, res) {
+  createReaction(req, res) {
     // console.log(req.body),
-    Reactions.create(req.body)
+    Reaction.create(req.body)
       .then(reactionData => {
-        return Thoughts.findOneAndUpdate(
-          { _id: req.body.userId },
-          { $addToSet: { thoughts: reactionData._id } },
-          { new: true }
+        Thoughts.findOneAndUpdate(
+          { _id: req.body.thoughtId },
+          { $addToSet: { reactions: reactionData._id } },
+          { new: true } //will return the most current update to the set.
         );
       })
-      .then(user => {
-        !user
+      .then(thoughtData => {
+        !thoughtData
           ? res.status(404).json({
-              message: "Thought created, but no user with that ID found",
+              message: "Reaction not created, please check thought id",
             })
-          : res.json("New Thought created 🎉");
+          : res.json("New reaction created 🎉");
       })
       .catch(err => res.status(500).json(err));
   },
@@ -131,7 +131,19 @@ module.exports = {
   //                         //
   /////////////////////////////
   // DELETE -> -> http://localhost:3001/api/{thoughtsID}/reaction/{reactionID} <- <- DELETE //
-  deleteThought(req, res) {
-    Thoughts.findOneAndDelete({ _id: req.params.thoughtId });
+  deleteReaction(req, res) {
+    Thoughts.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { _id: req.params.reactionId } } },
+      { runValidators: true, new: true }
+    )
+      .then(reactionData => {
+        !reactionData
+          ? res.status(404).json({
+              message: "Reaction created, but no thought with that ID found",
+            })
+          : res.json("Reaction deleted! 🎉");
+      })
+      .catch(err => res.status(500).json(err));
   },
 };

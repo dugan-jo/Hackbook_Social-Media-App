@@ -13,22 +13,28 @@ const thoughtsSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    // need a username to post a reactions
     username: {
       type: String,
       required: true,
     },
-
     reaction: [reactionSchema],
   },
   {
     toJSON: {
-      virtuals: true,
+      getters: true,
     },
-    id: true,
+    id: false,
   }
 );
-reactionSchema.virtual("reaction").get(function () {
-  return res.body;
+//////////////////////////
+//                      //
+//    CREATE VIRTUAL    //
+//                      //
+//////////////////////////
+// This creates the reaction count virtual for the thoughts
+thoughtsSchema.virtual("reactionCount").get(function () {
+  return this.reactions.length;
 });
 
 const Thoughts = model("thoughts", thoughtsSchema);
