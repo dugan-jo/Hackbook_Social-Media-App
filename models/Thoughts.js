@@ -31,11 +31,5 @@ reactionSchema.virtual("reaction").get(function () {
   return res.body;
 });
 
-/////////////////////////////////////////////////
-//                                             //
-//    DO I NEED TO MAKE A REACTION VIRTUAL?    //
-//                                             //
-/////////////////////////////////////////////////
-
 const Thoughts = model("thoughts", thoughtsSchema);
 module.exports = Thoughts;

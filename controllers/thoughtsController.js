@@ -1,5 +1,6 @@
 const Users = require("../models/Users");
 const Thoughts = require("../models/Thoughts");
+const Reactions = require("../models/Reaction");
 
 module.exports = {
   //
@@ -76,7 +77,7 @@ module.exports = {
     )
       .then(thoughtData =>
         !thoughtData
-          ? res.status(404).json({ message: "No thoughtwith this id!" })
+          ? res.status(404).json({ message: "No thought with this id!" })
           : res.json(thoughtData)
       )
       .catch(err => {
@@ -84,6 +85,7 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+
   //
   ////////////////////////////
   //                        //
@@ -91,6 +93,44 @@ module.exports = {
   //                        //
   ////////////////////////////
   // DELETE -> -> http://localhost:3001/api/thoughts/{ID} <- <- DELETE //
+  deleteThought(req, res) {
+    Thoughts.findOneAndDelete({ _id: req.params.thoughtId });
+  },
+
+  //
+  //////////////////////////////////
+  //                              //
+  //    CREATE A NEW REACTIONS    //
+  //                              //
+  //////////////////////////////////
+  // POST -> -> http://localhost:3001/api/{thoughtsID}/reaction <- <- POST //
+  createReactions(req, res) {
+    // console.log(req.body),
+    Reactions.create(req.body)
+      .then(reactionData => {
+        return Thoughts.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $addToSet: { thoughts: reactionData._id } },
+          { new: true }
+        );
+      })
+      .then(user => {
+        !user
+          ? res.status(404).json({
+              message: "Thought created, but no user with that ID found",
+            })
+          : res.json("New Thought created 🎉");
+      })
+      .catch(err => res.status(500).json(err));
+  },
+
+  //
+  /////////////////////////////
+  //                         //
+  //    DELETE A REACTION    //
+  //                         //
+  /////////////////////////////
+  // DELETE -> -> http://localhost:3001/api/{thoughtsID}/reaction/{reactionID} <- <- DELETE //
   deleteThought(req, res) {
     Thoughts.findOneAndDelete({ _id: req.params.thoughtId });
   },
