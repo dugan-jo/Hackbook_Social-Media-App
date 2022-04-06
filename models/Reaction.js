@@ -1,5 +1,12 @@
 const { Schema, model } = require("mongoose");
 
+//
+//
+///////////////////////////
+//                       //
+//    REACTION SCHEMA    //
+//                       //
+///////////////////////////
 const reactionSchema = new Schema(
   {
     reactionId: {

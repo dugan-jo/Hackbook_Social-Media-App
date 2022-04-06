@@ -14,6 +14,8 @@ module.exports = {
       .then(users => res.json(users))
       .catch(err => res.status(500).json(err));
   },
+
+  //
   //
   //////////////////////////
   //                      //
@@ -32,6 +34,8 @@ module.exports = {
       )
       .catch(err => res.status(500).json(err));
   },
+
+  //
   //
   /////////////////////////////
   //                         //
@@ -44,6 +48,8 @@ module.exports = {
       .then(dbUserData => res.json(dbUserData))
       .catch(err => res.status(500).json(err));
   },
+
+  //
   //
   /////////////////////////////
   //                         //
@@ -67,6 +73,8 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+
+  //
   //
   /////////////////////////////
   //                         //
@@ -83,6 +91,50 @@ module.exports = {
       )
       .then(() =>
         res.json({ message: "User and associated thoughts deleted!" })
+      )
+      .catch(err => res.status(500).json(err));
+  },
+
+  //
+  //
+  ////////////////////////
+  //                    //
+  //    ADD A FRIEND    //
+  //                    //
+  ////////////////////////
+  // POST -> -> http://localhost:3001/api/users/{userId}/friend <- <- POST //
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $push: { friends: req.params.friendId } }
+    )
+      .then(user =>
+        !user
+          ? res.status(404).json({
+              message: "Can not find your friend, please check the user id!",
+            })
+          : res.status(200).json({ message: "You have a new friend! 🎉" })
+      )
+      .catch(err => res.status(500).json(err));
+  },
+
+  //
+  //
+  ///////////////////////////
+  //                       //
+  //    DELETE A FRIEND    //
+  //                       //
+  ///////////////////////////
+  // DELETE -> -> http://localhost:3001/api/users/{userId}/friend/{friendId} <- <- DELETE //
+  deleteFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } }
+    )
+      .then(() =>
+        res.json({
+          message: "You have lost a friend! 🎉",
+        })
       )
       .catch(err => res.status(500).json(err));
   },

@@ -2,6 +2,13 @@
 const { Schema, model } = require("mongoose");
 const reactionSchema = require("./Reaction");
 
+//
+//
+///////////////////////////
+//                       //
+//    THOUGHTS SCHEMA    //
+//                       //
+///////////////////////////
 const thoughtsSchema = new Schema(
   {
     thoughtText: {
@@ -13,7 +20,7 @@ const thoughtsSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    // need a username to post a reactions
+    // need a username to post a thought
     username: {
       type: String,
       required: true,
@@ -37,5 +44,12 @@ thoughtsSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 
+//
+//
+////////////////////////////////////////
+//                                    //
+//    INITIALIZE THE THOUGHT MODEL    //
+//                                    //
+////////////////////////////////////////
 const Thoughts = model("thoughts", thoughtsSchema);
 module.exports = Thoughts;

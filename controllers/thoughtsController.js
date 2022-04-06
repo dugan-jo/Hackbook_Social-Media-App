@@ -17,6 +17,7 @@ module.exports = {
   },
 
   //
+  //
   ///////////////////////////////
   //                           //
   //    GET A THOUGHT BY ID    //
@@ -34,6 +35,7 @@ module.exports = {
       .catch(err => res.status(500).json(err));
   },
 
+  //
   //
   ////////////////////////////////
   //                            //
@@ -63,6 +65,7 @@ module.exports = {
   },
 
   //
+  //
   ////////////////////////////////
   //                            //
   //    EDIT A THOUGHT BY ID    //
@@ -87,6 +90,7 @@ module.exports = {
   },
 
   //
+  //
   ////////////////////////////
   //                        //
   //    DELETE A THOUGHT    //
@@ -97,6 +101,7 @@ module.exports = {
     Thoughts.findOneAndDelete({ _id: req.params.thoughtId });
   },
 
+  //
   //
   //////////////////////////////////
   //                              //
@@ -124,6 +129,7 @@ module.exports = {
       .catch(err => res.status(500).json(err));
   },
 
+  //
   //
   /////////////////////////////
   //                         //
