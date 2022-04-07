@@ -12,7 +12,7 @@ module.exports = {
   // GET -> -> http://localhost:3001/api/thoughts <- <- GET //
   getThoughts(req, res) {
     Thoughts.find()
-      .then(thoughtData => res.json(thoughtData))
+      .then(thoughts => res.json(thoughts))
       .catch(err => res.status(500).json(err));
   },
 
@@ -30,7 +30,7 @@ module.exports = {
       .then(thoughtData =>
         !thoughtData
           ? res.status(404).json({ message: "No thought with that ID" })
-          : res.json(thoughtData)
+          : res.json(req.body)
       )
       .catch(err => res.status(500).json(err));
   },
@@ -44,24 +44,25 @@ module.exports = {
   ////////////////////////////////
   // POST -> -> http://localhost:3001/api/thoughts <- <- POST //
   createThought(req, res) {
-    // console.log(req.body),
     Thoughts.create(req.body)
-      .then(thoughtData => {
-        // console.log(thought);
+      .then(thought => {
         return Users.findOneAndUpdate(
           { _id: req.body.userId },
-          { $addToSet: { thoughts: thoughtData._id } },
+          { $addToSet: { thoughts: thought._id } },
           { new: true }
         );
       })
-      .then(user => {
+      .then(user =>
         !user
           ? res.status(404).json({
-              message: "Thought created, but no user with that ID found",
+              message: "Thought created, but found no user with that ID",
             })
-          : res.json("New Thought created 🎉");
-      })
-      .catch(err => res.status(500).json(err));
+          : res.json(req.body)
+      )
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 
   //
@@ -73,7 +74,7 @@ module.exports = {
   ////////////////////////////////
   // PUT -> -> http://localhost:3001/api/thoughts/{ID} <- <- PUT //
   updateThought(req, res) {
-    Thoughts.findOneAndUpdate(
+    return Thoughts.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $set: req.body },
       { runValidators: true }
@@ -81,7 +82,7 @@ module.exports = {
       .then(thoughtData =>
         !thoughtData
           ? res.status(404).json({ message: "No thought with this id!" })
-          : res.json(thoughtData)
+          : res.json(req.body)
       )
       .catch(err => {
         console.log(err);
@@ -98,7 +99,13 @@ module.exports = {
   ////////////////////////////
   // DELETE -> -> http://localhost:3001/api/thoughts/{ID} <- <- DELETE //
   deleteThought(req, res) {
-    Thoughts.findOneAndDelete({ _id: req.params.thoughtId });
+    Thoughts.findOneAndRemove({ _id: req.params.thoughtId })
+      .then(thought =>
+        !thought
+          ? res.status(404).json({ message: "No thought with this id!" })
+          : res.json({ message: "Thought deleted" })
+      )
+      .catch(err => res.status(500).json(err));
   },
 
   //
@@ -110,22 +117,16 @@ module.exports = {
   //////////////////////////////////
   // POST -> -> http://localhost:3001/api/{thoughtsID}/reaction <- <- POST //
   createReaction(req, res) {
-    // console.log(req.body),
-    Reaction.create(req.body)
-      .then(reactionData => {
-        Thoughts.findOneAndUpdate(
-          { _id: req.body.thoughtId },
-          { $addToSet: { reactions: reactionData._id } },
-          { new: true } //will return the most current update to the set.
-        );
-      })
-      .then(thoughtData => {
-        !thoughtData
-          ? res.status(404).json({
-              message: "Reaction not created, please check thought id",
-            })
-          : res.json("New reaction created 🎉");
-      })
+    Thoughts.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { new: true }
+    )
+      .then(thought =>
+        !thought
+          ? res.status(404).json({ message: "No Thought with this id!" })
+          : res.json(req.body)
+      )
       .catch(err => res.status(500).json(err));
   },
 
@@ -148,7 +149,7 @@ module.exports = {
           ? res.status(404).json({
               message: "Reaction created, but no thought with that ID found",
             })
-          : res.json("Reaction deleted! 🎉");
+          : res.json("Reaction deleted! 🎉", reactionData);
       })
       .catch(err => res.status(500).json(err));
   },
