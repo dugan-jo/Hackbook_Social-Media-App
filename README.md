@@ -1,7 +1,7 @@
 # 18 NoSQL: Social Network API
 
 ## Demo Video
-chrome-extension://mmeijimgabbpbgpdklnllpncmdofkcpn/app.html#/files/48162bc2-8cba-455d-y1d2-2f23ad1dc18e
+https://drive.google.com/file/d/1f5LM_0DcdLbQPazMyxdolRDXjKpuLhKO/view
 
 ## Your Task
 
